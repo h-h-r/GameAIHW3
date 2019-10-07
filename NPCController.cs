@@ -68,8 +68,8 @@ public class NPCController : MonoBehaviour {
                 }
                 if (ai.tag == "Wolf")
                 {
-                    label.text = "Wander";
-                    (linear, angular) = Algo("Wander");
+                    // label.text = "Wander";
+                    // (linear, angular) = Algo("Wander");
                 }
                 break;
 
@@ -82,13 +82,11 @@ public class NPCController : MonoBehaviour {
                     }
                     if (ai.tag == "Wolf")
                     {
-                        label.text = "Chase Player";
-                        (linear, angular) = Algo("ChasePlayer");
+                        // label.text = "Chase Player";
+                        // (linear, angular) = Algo("ChasePlayer");
                     }
                 }
 
-                // linear = ai.whatever();  -- replace with the desired calls
-                // angular = ai.whatever();
                 break;
             case 3:
                 if (label)
@@ -96,54 +94,43 @@ public class NPCController : MonoBehaviour {
                     label.text = "";
                     if (ai.tag == "Hunter")
                     {
-                        label.text = "Dynamic pursue";
-                        (linear, angular) = Algo("Pursue");
+                        // label.text = "Dynamic pursue";
+                        // (linear, angular) = Algo("Pursue");
                     }
                     if (ai.tag == "Wolf")
                     {
-                        label.text = "Dynamic Evade";
-                        (linear, angular) = Algo("Evade");
+                        // label.text = "Dynamic Evade";
+                        // (linear, angular) = Algo("Evade");
 
                     }
-                    //linear = ai.Seek();
-
-                    //(linear,angular) = ai.CollisionPrediction();
-
-                    //angular = ai.FaceAway();
                 }
 
-                // linear = ai.whatever();  -- replace with the desired calls
-                // angular = ai.whatever();
                 break;
             case 4:
                 if (label) {
                     label.text = "";
                 }
-                Vector3 collisionPoint;
-                if (ai.CollisionPrediction(out collisionPoint) == true)
-                {
-                    DrawCircle(collisionPoint, 0.1f);
-                    linear = ai.Evade(collisionPoint);
-                    label.text = "Evade from the pridicted circle!";
-                    angular = ai.FaceAway();
-                }
-                else
-                {
-                    (linear, angular) = Algo("ChasePlayer");
-                }
+                // Vector3 collisionPoint;
+                // if (ai.CollisionPrediction(out collisionPoint) == true)
+                // {
+                //     DrawCircle(collisionPoint, 0.1f);
+                //     linear = ai.Evade(collisionPoint);
+                //     label.text = "Evade from the pridicted circle!";
+                //     angular = ai.FaceAway();
+                // }
+                // else
+                // {
+                //     (linear, angular) = Algo("ChasePlayer");
+                // }
 
                 
-
-                // linear = ai.whatever();  -- replace with the desired calls
-                // angular = ai.whatever();
                 break;
             case 5:
                 if (label) {
                     label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Fifth algorithm";
                 }
 
-                // linear = ai.whatever();  -- replace with the desired calls
-                // angular = ai.whatever();
+
                 break;
         }
         update(linear, angular, Time.deltaTime);

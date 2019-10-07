@@ -220,17 +220,17 @@ public class MapStateManager : MonoBehaviour {
 
     private void EnterMapStateZero()
     {
-        narrator.text = "Mapstate Zero\nHunter and Wolf";
+        // narrator.text = "Mapstate Zero\nHunter and Wolf";
 
-        currentPhase = 0; // or whatever. Won't necessarily advance the phase every time
-        previousPhase = 0;
+        // currentPhase = 0; // or whatever. Won't necessarily advance the phase every time
+        // previousPhase = 0;
 
-        spawnedNPCs.ForEach(Destroy);
-        GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText1, 0);
-        GameObject hunter = SpawnItem(spawner1, HunterPrefab, null, SpawnText2, 0);
+        // spawnedNPCs.ForEach(Destroy);
+        // GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText1, 0);
+        // GameObject hunter = SpawnItem(spawner1, HunterPrefab, null, SpawnText2, 0);
 
-        spawnedNPCs.Add(hunter);
-        spawnedNPCs.Add(wolf);
+        // spawnedNPCs.Add(hunter);
+        // spawnedNPCs.Add(wolf);
 
         //currentPhase = 2; // or whatever. Won't necessarily advance the phase every time
 
@@ -238,83 +238,44 @@ public class MapStateManager : MonoBehaviour {
     }
 
     private void EnterMapStateOne() {
-        narrator.text = "MapState one\nDynamic wonder\n with wall/tree avoidence";
+        // narrator.text = "MapState one\n";
 
-        currentPhase = 1;
-        previousPhase = 1;
+        // currentPhase = 1;
+        // previousPhase = 1;
 
-        spawnedNPCs.ForEach(Destroy);
+        // spawnedNPCs.ForEach(Destroy);
 
-        //GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 1);
-        //GameObject hunter = SpawnItem(spawner1, HunterPrefab, wolf.GetComponent<NPCController>(), SpawnText1, 1);
-        //wolf.GetComponent<SteeringBehavior>().target = hunter.GetComponent<NPCController>();
+        // //GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 1);
+        // //GameObject hunter = SpawnItem(spawner1, HunterPrefab, wolf.GetComponent<NPCController>(), SpawnText1, 1);
+        // //wolf.GetComponent<SteeringBehavior>().target = hunter.GetComponent<NPCController>();
 
-        GameObject hunter = SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 1);
-        GameObject wolf = SpawnItem(spawner2, WolfPrefab, hunter.GetComponent<NPCController>(), SpawnText2, 1);
+        // GameObject hunter = SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 1);
+        // GameObject wolf = SpawnItem(spawner2, WolfPrefab, hunter.GetComponent<NPCController>(), SpawnText2, 1);
         
-        hunter.GetComponent<SteeringBehavior>().target = wolf.GetComponent<NPCController>();
+        // hunter.GetComponent<SteeringBehavior>().target = wolf.GetComponent<NPCController>();
 
-        spawnedNPCs.Add(hunter);
-        spawnedNPCs.Add(wolf);
+        // spawnedNPCs.Add(hunter);
+        // spawnedNPCs.Add(wolf);
     }
 
     private void EnterMapStateTwo()
     {
         narrator.text = "MapState Two";
 
-        currentPhase = 2;
-        previousPhase = 2;
-
-        spawnedNPCs.ForEach(Destroy);
-
-        GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 2);
-        wolf.GetComponent<SteeringBehavior>().player = player;
-        Camera.main.GetComponent<CameraController>().player = player;
-        spawnedNPCs.Add(wolf);
+       
     }
 
     private void EnterMapStateThree()
     {
         narrator.text = "MapState Three";
 
-        currentPhase = 3;
-        previousPhase = 3;
-
-        spawnedNPCs.ForEach(Destroy);
-
-        GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 3);
-        GameObject hunter = SpawnItem(spawner1, HunterPrefab, wolf.GetComponent<NPCController>(), SpawnText1, 3);
-        wolf.GetComponent<SteeringBehavior>().target = hunter.GetComponent<NPCController>();
-        //wolf.GetComponent<SteeringBehavior>().player = player;
-        //.GetComponent<NPCController>();
-        //Camera.main.GetComponent<CameraController>().player = player;
-        spawnedNPCs.Add(hunter);
-        spawnedNPCs.Add(wolf);
+        
     }
 
     private void EnterMapStateFour()
     {
         narrator.text = "MapState Four";
 
-        currentPhase = 4;
-        previousPhase = 4;
-
-        spawnedNPCs.ForEach(Destroy);
-
-        GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 4);
-        GameObject hunter = SpawnItem(spawner1, HunterPrefab, wolf.GetComponent<NPCController>(), SpawnText1, 4);
-        //GameObject hunter2 = SpawnItem(spawner1, HunterPrefab, wolf.GetComponent<NPCController>(), SpawnText1, 4);
-        wolf.GetComponent<SteeringBehavior>().target = hunter.GetComponent<NPCController>();
-        //wolf.GetComponent<SteeringBehavior>().player = player;
-        //.GetComponent<NPCController>();
-        //Camera.main.GetComponent<CameraController>().player = player;
-        wolf.GetComponent<SteeringBehavior>().player = player;
-        hunter.GetComponent<SteeringBehavior>().player = player;
-
-        spawnedNPCs.Add(hunter);
-        //spawnedNPCs.Add(hunter2);
-        spawnedNPCs.Add(wolf);
-        DestroyTrees();
     }
 
 
