@@ -214,7 +214,7 @@ public class SteeringBehavior : MonoBehaviour {
         }
 
         // stop if arrive (in target radius) and return zero linear_acc
-        if (direction.magnitude < targetRadiusA)
+        if (direction.magnitude < targetRadiusA+1.2f)
         {
             agent.label.text = "dynamic arrive\n<In targetRadiusA>";
             agent.velocity = Vector3.zero;
@@ -532,7 +532,7 @@ public class SteeringBehavior : MonoBehaviour {
         leftDir.Normalize();
         Vector3 rightDir = Quaternion.AngleAxis(20f, Vector3.up) * VelocityDir;
         rightDir.Normalize();
-        Debug.Log("magnitude: " + agent.velocity.magnitude + " velocity: " + VelocityDir);
+        //Debug.Log("magnitude: " + agent.velocity.magnitude + " velocity: " + VelocityDir);
         Vector3 raySource = agent.position;
         raySource = new Vector3(raySource.x, 0, raySource.z);
         //Debug.Log("orientation:"+agent.orientation);
@@ -540,7 +540,7 @@ public class SteeringBehavior : MonoBehaviour {
         RaycastHit hitL;
         if (Physics.Raycast(raySource, leftDir, out hitL, whiskerLength * sideWhiskerScale))
         {
-            Debug.Log(hitL.collider.name);
+            // Debug.Log(hitL.collider.name);
             agent.Draw3Whiskers(agent.position + leftDir * whiskerLength * sideWhiskerScale, agent.position + VelocityDir * whiskerLength, agent.position + rightDir * whiskerLength * sideWhiskerScale, agent.position);
             //agent.label.text = "<==: " + hitL.collider.name;
             hitInfo = hitL;
@@ -558,7 +558,7 @@ public class SteeringBehavior : MonoBehaviour {
         RaycastHit hitM;
         if (Physics.Raycast(raySource, leftDir, out hitM, whiskerLength))
         {
-            Debug.Log(hitM.collider.name);
+            // Debug.Log(hitM.collider.name);
          
             agent.Draw3Whiskers(agent.position + leftDir * wanderOffset * sideWhiskerScale, agent.position + VelocityDir * wanderOffset, agent.position + rightDir * wanderOffset * sideWhiskerScale, agent.position);
 
@@ -667,7 +667,7 @@ public class SteeringBehavior : MonoBehaviour {
         Vector3 dp = target.position - agent.position;
         Vector3 dv = target.velocity - agent.velocity;
         float tClosest = -Vector3.Dot(dp, dv) / (dv.magnitude * dv.magnitude);
-        Debug.Log("tclosest: " + tClosest);
+        // Debug.Log("tclosest: " + tClosest);
         Vector3 p_agent = agent.position + agent.velocity * tClosest;
         Vector3 p_target = target.position + target.velocity * tClosest;
         if (tClosest > 0f)
@@ -685,6 +685,19 @@ public class SteeringBehavior : MonoBehaviour {
             return false;
         }
     }
-            // ETC.
+    
+    //Distance to target
+    public float DistanceToTarget(){
+        return Vector3.Distance(agent.position,target.position);
+    } 
+    
+    //Haoran
+    public void Stop(){
+        agent.velocity = new Vector3(0f,0f,0f);
+    }
+    
+    
+    
+    // ETC.
 
 }

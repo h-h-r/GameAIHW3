@@ -64,51 +64,52 @@ public class NPCController : MonoBehaviour {
 
             case 1:
                 if (label) {
-                    label.text = ""; 
+                    label.text = "Wander"; 
                 }
-                if (ai.tag == "Wolf")
-                {
-                    // label.text = "Wander";
-                    // (linear, angular) = Algo("Wander");
-                }
+                (linear, angular) = Algo("Wander");
                 break;
 
             case 2:
                 if (label) {
-                    label.text = "";
-                    if (ai.tag == "Hunter")
-                    {    
-                      
-                    }
-                    if (ai.tag == "Wolf")
-                    {
-                        // label.text = "Chase Player";
-                        // (linear, angular) = Algo("ChasePlayer");
-                    }
+                    label.text = "Evade";
                 }
+                (linear, angular) = Algo("Evade");
+                if (ai.DistanceToTarget()<2f){
+                    linear = new Vector3(0f,0f,0f);
+                    ai.Stop();
+                    label.text = "Collision!";
+                    // Destroy(self);
+
+                    Invoke("Disappear", 3);
+                    return;
+                }
+
 
                 break;
             case 3:
                 if (label)
                 {
-                    label.text = "";
-                    if (ai.tag == "Hunter")
-                    {
-                        // label.text = "Dynamic pursue";
-                        // (linear, angular) = Algo("Pursue");
-                    }
-                    if (ai.tag == "Wolf")
-                    {
-                        // label.text = "Dynamic Evade";
-                        // (linear, angular) = Algo("Evade");
-
-                    }
+                    label.text = "Pursue";
+                }
+                (linear, angular) = Algo("Pursue");
+                if (ai.DistanceToTarget()<5f){
+                    phase = 5;
                 }
 
                 break;
             case 4:
                 if (label) {
-                    label.text = "";
+                    label.text = "Wander";
+                }
+                (linear, angular) = Algo("Wander");
+                
+               if (ai.DistanceToTarget()<20f){
+                   
+                    if (ai.tag == "Wolf"){
+                        phase = 2;
+                    }else{
+                        phase = 3;
+                    }
                 }
                 // Vector3 collisionPoint;
                 // if (ai.CollisionPrediction(out collisionPoint) == true)
@@ -127,8 +128,10 @@ public class NPCController : MonoBehaviour {
                 break;
             case 5:
                 if (label) {
-                    label.text = name.Replace("(Clone)", "") + "\nAlgorithm: Fifth algorithm";
+                    label.text = "Arrive";
                 }
+                linear = ai.Arrive();
+                angular = ai.Face();
 
 
                 break;
@@ -331,5 +334,15 @@ public class NPCController : MonoBehaviour {
         }
         return (linear,angular);
     }
+
+    //Haoran 
+    //destroy hunter and wolf
+    public void Disappear(){
+        //Debug.Log("Disappear!");
+        
+        Destroy(GameObject.FindGameObjectWithTag("Wolf"));
+        Destroy(GameObject.FindGameObjectWithTag("Hunter"));
+    }
+    
 
 }

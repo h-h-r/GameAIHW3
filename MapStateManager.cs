@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+//Haoran 
+using System.IO;
+
+
 /// <summary>
 /// MapStateManager is the place to keep a succession of events or "states" when building 
 /// a multi-step AI demo. Note that this is a way to manage 
@@ -15,6 +19,17 @@ using UnityEngine.UI;
 /// One use will be for AI demos that are switched up based on keyboard input. For that, 
 /// the number keys 0..9 will be used to dial in whichever phase the user wants to see.
 /// </summary>
+
+enum Behaviors
+{
+    wander = 1,
+    Evade = 2,
+    Pursue = 3,
+    CheckDistance = 4,
+    // Friday = 4,
+    // Saturday =5,
+    // Sunday = 6
+}
 
 public class MapStateManager : MonoBehaviour {
     // Set prefabs
@@ -60,17 +75,19 @@ public class MapStateManager : MonoBehaviour {
     void Start() {
         narrator.text = "This is the place to mention major things going on during the demo, the \"narration.\"";
 
-        TreeCount = 50;    // TreeCount isn't showing up in Inspector
+        //TreeCount = 20;    // TreeCount isn't showing up in Inspector
 
         trees = new List<GameObject>();
-        SpawnTrees(TreeCount);
-
+        //SpawnTrees(TreeCount);
+        SpawnTreesFromFile("treePositions20.txt");
         spawnedNPCs = new List<GameObject>();
         //spawnedNPCs.Add(SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 4));
         //Invoke("SpawnWolf", 1);
         //Invoke("Meeting1", 2);
         EnterMapStateZero();
         player = GameObject.FindGameObjectWithTag("Player");
+
+        //CreatePath();
     }
 
     /// <summary>
@@ -90,7 +107,7 @@ public class MapStateManager : MonoBehaviour {
             if (inputstring[0] == 'R')
             {
                 DestroyTrees();
-                SpawnTrees(50);
+                SpawnTrees(20);
             }
 
             // Look for a number key click
@@ -220,28 +237,36 @@ public class MapStateManager : MonoBehaviour {
 
     private void EnterMapStateZero()
     {
-        // narrator.text = "Mapstate Zero\nHunter and Wolf";
+        narrator.text = "Mapstate Zero\n20 Trees";
 
-        // currentPhase = 0; // or whatever. Won't necessarily advance the phase every time
-        // previousPhase = 0;
+        currentPhase = 0; // or whatever. Won't necessarily advance the phase every time
+        previousPhase = 0;
 
-        // spawnedNPCs.ForEach(Destroy);
+        spawnedNPCs.ForEach(Destroy);
         // GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText1, 0);
         // GameObject hunter = SpawnItem(spawner1, HunterPrefab, null, SpawnText2, 0);
 
         // spawnedNPCs.Add(hunter);
         // spawnedNPCs.Add(wolf);
 
-        //currentPhase = 2; // or whatever. Won't necessarily advance the phase every time
 
-        //spawnedNPCs.Add(SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 4));
     }
 
     private void EnterMapStateOne() {
-        // narrator.text = "MapState one\n";
+        narrator.text = "MapState one\n Hunter appears and wander";
 
-        // currentPhase = 1;
-        // previousPhase = 1;
+        // GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText1, 0);
+        GameObject hunter = SpawnItem(spawner1, HunterPrefab, null, SpawnText2, 0);
+        spawnedNPCs.Add(hunter);
+        // spawnedNPCs.Add(wolf);
+
+         //hunter
+        spawnedNPCs[0].GetComponent<NPCController>().phase = (int)Behaviors.wander;
+        //wolf
+        //spawnedNPCs[1].GetComponent<NPCController>().phase = (int)Behaviors.wander;
+
+        currentPhase = 1;
+        previousPhase = 1;
 
         // spawnedNPCs.ForEach(Destroy);
 
@@ -260,14 +285,38 @@ public class MapStateManager : MonoBehaviour {
 
     private void EnterMapStateTwo()
     {
-        narrator.text = "MapState Two";
+        narrator.text = "MapState Two\n Wolf appears and wander";
 
+        GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText1, 0);
+        spawnedNPCs.Add(wolf);
+        // wolf
+        spawnedNPCs[1].GetComponent<NPCController>().phase = (int)Behaviors.wander;
+
+        currentPhase = 2;
+        previousPhase = 2;
        
     }
 
     private void EnterMapStateThree()
     {
-        narrator.text = "MapState Three";
+        narrator.text = "MapState Three\n";
+        
+        // if (spawnedNPCs.Count > 1 && Vector3.Distance(spawnedNPCs[1].transform.position, spawnedNPCs[0].transform.position) < 12)
+        // {
+            // Debug.Log("close!!!!!!!!!!!!!!!!!!!");
+        narrator.text += "The hunter and the wolf wander until the hunter spots the wolf and believes it is his target. The Wolf runs.";
+        spawnedNPCs[0].GetComponent<SteeringBehavior>().target = spawnedNPCs[1].GetComponent<NPCController>();
+        spawnedNPCs[1].GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
+        
+        //hunter
+        spawnedNPCs[0].GetComponent<NPCController>().phase =(int)Behaviors.CheckDistance;
+        //wolf
+        spawnedNPCs[1].GetComponent<NPCController>().phase = (int)Behaviors.CheckDistance;
+        // currentPhase++;
+        // }
+        
+        currentPhase = 3;
+        previousPhase = 3;
 
         
     }
@@ -329,15 +378,44 @@ public class MapStateManager : MonoBehaviour {
         {
             //Vector3 size = spawner.transform.localScale;
             Vector3 position = new Vector3(UnityEngine.Random.Range(-less_X, less_X), 0, UnityEngine.Random.Range(-less_Z, less_Z));
+
             GameObject temp = Instantiate(TreePrefab, position, Quaternion.identity);
 
             // diameter will be somewhere between .2 and .7 for both X and Z:
-            diameter = UnityEngine.Random.Range(0.5F, 0.1F);
+            diameter = UnityEngine.Random.Range(0.5F, 0.7F);
             temp.transform.localScale = new Vector3(diameter, 1.0F, diameter);
 
             trees.Add(temp);
           
         }
+    }
+
+    //Haoran
+    //Spawn trees from txt file
+    private void SpawnTreesFromFile(String filePathWithName){
+            //string path = "Assets/Scripts/treePositions20.txt";
+            string path = "Assets/Scripts/"+filePathWithName;
+            StreamReader reader = new StreamReader(path); 
+            // Debug.Log(reader.ReadToEnd());
+
+            while(!reader.EndOfStream)
+            {
+                string line = reader.ReadLine( );
+                // Do Something with the input. 
+                //Debug.Log(line);
+                string[] coordinates = line.Split(',');
+                //Debug.Log(coordinates[0] + "?" + coordinates[1]+"?"+coordinates[2]);
+
+                Vector3 position = new Vector3(float.Parse(coordinates[0]),float.Parse(coordinates[1]),float.Parse(coordinates[2]));
+                GameObject temp = Instantiate(TreePrefab, position, Quaternion.identity);
+
+                float diameter = UnityEngine.Random.Range(0.5F, 0.7F);
+                temp.transform.localScale = new Vector3(diameter, 1.0F, diameter);
+
+                trees.Add(temp);
+            }
+
+            reader.Close( );  
     }
 
     private void DestroyTrees()
