@@ -323,8 +323,18 @@ public class MapStateManager : MonoBehaviour {
 
     private void EnterMapStateFour()
     {
-        narrator.text = "MapState Four";
 
+        narrator.text = "Mapstate Foour\n";
+
+        currentPhase = 4; // or whatever. Won't necessarily advance the phase every time
+        previousPhase = 4;
+
+        //spawnedNPCs[0].SetActive(true);
+        //spawnedNPCs[1].SetActive(true);
+        spawnedNPCs.ForEach(Destroy);
+        spawnedNPCs.Clear();
+        Debug.Log("<"+spawnedNPCs.Count + ">\n" );
+        CreatePath();
     }
 
 

@@ -14,6 +14,9 @@ public class CameraController : MonoBehaviour {
 
     void LateUpdate() {
         // Comment this line out if you want a fixed camera
-        transform.position = player.transform.position + offset;
+        if (player)
+        {
+            transform.position = player.transform.position + offset;
+        }
     }
 }
