@@ -80,7 +80,7 @@ public class NPCController : MonoBehaviour {
                     label.text = "Collision!";
                     // Destroy(self);
 
-                    Invoke("Disappear", 3);
+                    Invoke("DisappearWolf", 3);
                     return;
                 }
 
@@ -132,7 +132,11 @@ public class NPCController : MonoBehaviour {
                 }
                 linear = ai.Arrive();
                 angular = ai.Face();
-
+                if (ai.DistanceToTarget()<2f){
+                    Invoke("DisappearHunter",3);
+                    //Debug.Log("????????????????");
+                    return;
+                }
 
                 break;
         }
@@ -337,11 +341,26 @@ public class NPCController : MonoBehaviour {
 
     //Haoran 
     //destroy hunter and wolf
-    public void Disappear(){
+    public void DisappearWolf(){
         //Debug.Log("Disappear!");
+        label.text = "";
+        if (GameObject.FindGameObjectWithTag("Wolf")){
+            GameObject.FindGameObjectWithTag("Wolf").SetActive(false);
+        }
+        // Destroy(GameObject.FindGameObjectWithTag("Hunter"));
+    }
+
+    //Haoran 
+    //destroy hunter and wolf
+    public void DisappearHunter(){
+        //Debug.Log("Disappear!");
+        label.text = "";
+        if (GameObject.FindGameObjectWithTag("Hunter")){
+            GameObject.FindGameObjectWithTag("Hunter").SetActive(false);
+        }
         
-        Destroy(GameObject.FindGameObjectWithTag("Wolf"));
-        Destroy(GameObject.FindGameObjectWithTag("Hunter"));
+        //Destroy(GameObject.FindGameObjectWithTag("Hunter"));
+        // Destroy(GameObject.FindGameObjectWithTag("Hunter"));
     }
     
 
