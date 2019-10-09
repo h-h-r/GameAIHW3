@@ -26,7 +26,8 @@ enum Behaviors
     Evade = 2,
     Pursue = 3,
     CheckDistance = 4,
-    // Friday = 4,
+    Arrive = 5,
+    PathFollow = 6,
     // Saturday =5,
     // Sunday = 6
 }
@@ -333,8 +334,14 @@ public class MapStateManager : MonoBehaviour {
         //spawnedNPCs[1].SetActive(true);
         spawnedNPCs.ForEach(Destroy);
         spawnedNPCs.Clear();
-        Debug.Log("<"+spawnedNPCs.Count + ">\n" );
+        //Debug.Log("<"+spawnedNPCs.Count + ">\n" );
         CreatePath();
+        GameObject red = SpawnItem(spawner3, RedPrefab, null, SpawnText3, (int)Behaviors.PathFollow);
+        //GameObject red = SpawnItem(spawner3, RedPrefab, null, SpawnText3, 7);
+
+        spawnedNPCs.Add(red);
+        red.GetComponent<SteeringBehavior>().target = this.house.GetComponent<NPCController>();
+        //DestroyTrees();
     }
 
 

@@ -139,6 +139,24 @@ public class NPCController : MonoBehaviour {
                 }
 
                 break;
+            case 6:
+                if (label)
+                {
+                    label.text = "PathFollowWithAvoid";
+                }
+                (linear, angular) = Algo("PathFollow");
+
+                break;
+            case 7:
+                if (label)
+                {
+                    label.text = "gotohouse";
+                }
+                //(linear, angular) = ai.PathFollow();
+                linear = ai.Arrive(ai.target.position - ai.agent.position);
+                angular = ai.Face();
+
+                break;
         }
         update(linear, angular, Time.deltaTime);
         if (label) {
@@ -266,7 +284,17 @@ public class NPCController : MonoBehaviour {
         if (( ai.PerformWhisker(out hitInfo) == true) && hitInfo.collider.tag != "Player" && hitInfo.collider.tag != ai.tag)
         {
             //seek new target based on hitinfo
-            if (hitInfo.collider.name == "Tree(Clone)")
+            Debug.Log("facewhisker:"+ hitInfo.collider.name);
+            
+            if (hitInfo.collider.name == "House")
+            {
+                Debug.Log("house1");
+                (linear, angular) = ai.PathFollow();
+                phase = 7;
+                Debug.Log(ai.target.position);
+
+            }
+            else if (hitInfo.collider.name == "Tree(Clone)")
             {
                 ai.avoidTree = true;
                 ai.treePosition = hitInfo.point;
@@ -283,7 +311,16 @@ public class NPCController : MonoBehaviour {
         else if ((ai.PerformWhiskerAlongVelocity(out hitInfo) == true ) && hitInfo.collider.tag != "Player" && hitInfo.collider.tag != ai.tag)
         {
             //seek new target based on hitinfo
-            if (hitInfo.collider.name == "Tree(Clone)")
+
+            Debug.Log("velocitywhisker:" + hitInfo.collider.name);
+            
+            if (hitInfo.collider.name == "House")
+            {
+                Debug.Log("house2");
+                (linear, angular) = ai.PathFollow();
+                phase = 7;
+                Debug.Log(ai.target.position);
+            }else if (hitInfo.collider.name == "Tree(Clone)")
             {
                 ai.avoidTree = true;
                 ai.treePosition = hitInfo.point;
@@ -332,6 +369,9 @@ public class NPCController : MonoBehaviour {
                 }else if (algo == "Wander")
                 {
                     angular = ai.Wander();
+                }else if (algo == "PathFollow")
+                {
+                    (linear, angular) = ai.PathFollow(); 
                 }
                 
             }

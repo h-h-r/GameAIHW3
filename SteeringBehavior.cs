@@ -59,6 +59,121 @@ public class SteeringBehavior : MonoBehaviour {
         wanderOrientation = agent.orientation;
     }
 
+    //Haoran
+    //pathfollow
+    public (Vector3,float) PathFollow()
+    {
+        Vector3 targetOnPath = computeTrgetOnThePath();
+        //Debug.Log(targetOnPath);
+        agent.DrawCircle(targetOnPath, 0.3f);
+        Vector3 linearAcc = Seek(targetOnPath);
+        float angularAcc = FaceTo(targetOnPath - agent.position);
+        return (linearAcc, angularAcc);
+    }
+
+    //Haoran
+    //pathfollow helper function
+    private Vector3 computeTrgetOnThePath()
+    {
+        //for (int i = 0; i < Path.Length; i++)
+        //{
+        //    Debug.Log(i+"<>"+ Path[i].transform.position);
+        //}
+
+
+        //compute line vectors,  n nodes => n-1 vectors
+        List<Vector3> lineVectors = new List<Vector3>();
+        for (int i = 1; i < Path.Length; i++)
+        {
+            lineVectors.Add(Path[i].transform.position - Path[i - 1].transform.position);
+            //Debug.Log(i + "$" + lineVectors[i - 1]);
+        }
+        //Debug.Log(agent.position);
+        //compute projected points, n nodes => n-1 vectors => n-1 prjected points 
+        List<Vector3> projectedPoints = new List<Vector3>(); 
+        for (int i = 0; i < lineVectors.Count; i++)
+        {
+            //Debug.Log(i+"?"+ (Path[i].transform.position + Vector3.Project(agent.position - Path[i].transform.position, lineVectors[i])));
+            //projectedPoints.Add(Path[i].transform.position + Vector3.Project(agent.position- Path[i].transform.position, lineVectors[i] ));
+            //agent.DrawCircle(Path[i].transform.position + Vector3.Project(agent.position - Path[i].transform.position, lineVectors[i]),0.5f);
+            projectedPoints.Add(FindNearestPointOnLine(Path[i].transform.position, Path[i + 1].transform.position, agent.position));
+            //Debug.Log(i + "?" + FindNearestPointOnLine(Path[i].transform.position, Path[i + 1].transform.position, agent.position));
+
+
+
+        }
+
+        //find nearest projection point
+        int index = 0;
+        Vector3 nearestPoint = new Vector3(0,0,0);
+        float distance = Mathf.Infinity;
+
+        List<float> distList = new List<float>();
+
+
+        for (int i = 0; i <projectedPoints.Count;i++)
+        {
+            if ((agent.position - projectedPoints[i]).magnitude < distance)
+            {
+                distance = (agent.position - projectedPoints[i]).magnitude;
+                index = i;
+                nearestPoint = projectedPoints[i];
+            }
+        }
+
+        //Debug.Log("Nearest Index = " + index + ".");
+        //agent.DrawCircle(nearestPoint, 0.3f);
+
+        //calculate the target to seek
+        //index 0 ~ n-1
+        float lookAheadDistance = 5;
+        Vector3 targetPoint = new Vector3(0,0,0);
+
+        if (lookAheadDistance< (Path[index + 1].transform.position - projectedPoints[index]).magnitude)
+        {
+            targetPoint = projectedPoints[index] + lookAheadDistance * (lineVectors[index].normalized);
+        }
+        else
+        {
+            lookAheadDistance -= (Path[index + 1].transform.position - projectedPoints[index]).magnitude;
+            for (int k = index+1; k < lineVectors.Count; k++)
+            {
+                if (lineVectors[k].magnitude < lookAheadDistance)
+                {
+                    lookAheadDistance -= lineVectors[k].magnitude;
+                }
+                else
+                {
+                    targetPoint = projectedPoints[k] + lookAheadDistance * (lineVectors[k].normalized);
+                    //check last segment
+                    if (k == lineVectors.Count-1 && lookAheadDistance > lineVectors[k].magnitude)
+                    {
+                        targetPoint = Path[k+1].transform.position;
+                    }
+                    break;
+                }
+            }
+
+        }
+
+        return targetPoint;
+
+    }
+
+    public Vector3 FindNearestPointOnLine(Vector3 origin, Vector3 end, Vector3 point)
+    {
+        //Get heading
+        Vector3 heading = (end - origin);
+        float magnitudeMax = heading.magnitude;
+        heading.Normalize();
+
+        //Do projection from the point but clamp it
+        Vector3 lhs = point - origin;
+        float dotP = Vector3.Dot(lhs, heading);
+        dotP = Mathf.Clamp(dotP, 0f, magnitudeMax);
+        return origin + heading * dotP;
+    }
+
     //Haoran 
     //dynamic pursue
     //return linear acc
@@ -304,8 +419,12 @@ public class SteeringBehavior : MonoBehaviour {
     //Haoran
     //seek target
     //return linear acc
-    public Vector3 Seek() {
-        Vector3 linear_acc = target.position - agent.position; //seek direction vector
+    public Vector3 Seek()
+    {
+        return Seek(target.position);
+    }
+    public Vector3 Seek(Vector3 targetPosition) {
+        Vector3 linear_acc = targetPosition - agent.position; //seek direction vector
 
         //clip to max linear acceleration
         if (linear_acc.magnitude > this.maxAcceleration){
