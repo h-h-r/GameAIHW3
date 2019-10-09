@@ -11,3 +11,6 @@ Eric Xu
     The Wolf evades and the hunter pursues.
 4: Red appears and walks to Granny's house using path following algorithm with obstacle avoidence.
 5: Wolf appears and pursues Red.
+6: This stage can only be triggered automatically when wolf and red collide in stage 5.
+7: Hunter appears again and runs to Granny’s house.
+8: 

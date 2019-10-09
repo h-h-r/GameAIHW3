@@ -29,6 +29,8 @@ public class NPCController : MonoBehaviour {
     LineRenderer line;              // Used to draw circles and other things
     LineRenderer ray;
 
+    private int timeCounter = (int)(3 / 0.02); 
+
     private void Start() {
         ai = GetComponent<SteeringBehavior>();
         rb = GetComponent<Rigidbody>();
@@ -74,6 +76,7 @@ public class NPCController : MonoBehaviour {
                     label.text = "Evade";
                 }
                 (linear, angular) = Algo("Evade");
+                //wolf
                 if (ai.DistanceToTarget()<2f){
                     linear = new Vector3(0f,0f,0f);
                     ai.Stop();
@@ -81,6 +84,8 @@ public class NPCController : MonoBehaviour {
                     // Destroy(self);
 
                     Invoke("DisappearWolf", 3);
+                    Invoke("DisappearHunter", 3);
+
                     return;
                 }
 
@@ -96,8 +101,39 @@ public class NPCController : MonoBehaviour {
                 //{
                 //    //phase = 5;
                 //}
+
+                if (ai.tag == "Wolf")
+                {
+                    if (ai.DistanceToTarget() < 1.5f){
+                        //linear = new Vector3(0, 0, 0);
+                        //angular = 0;
+                        if (timeCounter > 50)//1second
+                        {
+                            ai.Stop();
+                            timeCounter -= 1;
+                        }
+                        else if (timeCounter <= 0)
+                        {
+
+                            (linear, angular) = Algo("Pursue");
+                            timeCounter = 150;
+                        }
+                        else
+                        {
+                            ai.target = ai.house;
+                            //phase = 7;//gotohouse
+                            timeCounter -= 1;
+                            //timeCounter = 150;
+                        }
+                        
+                        //Debug.Log(Time.fixedDeltaTime + "/////");
+                        //ai.StopTarget();
+                        //ai.target = GameObject.FindGameObjectsWithTag("House").;
+                        
+                    }
+                }
                 if (ai.target.tag != "Red" && ai.DistanceToTarget()<5f){
-                    Debug.Log("?????????????????????????/");
+                    //Debug.Log("?????????????????????????/");
                     phase = 5;
                 }
 
@@ -138,7 +174,7 @@ public class NPCController : MonoBehaviour {
                 linear = ai.Arrive();
                 angular = ai.Face();
                 if (ai.DistanceToTarget()<2f){
-                    Invoke("DisappearHunter",3);
+                    //Invoke("DisappearHunter",3);
                     //Debug.Log("????????????????");
                     return;
                 }
@@ -149,8 +185,28 @@ public class NPCController : MonoBehaviour {
                 {
                     label.text = "PathFollowWithAvoid";
                 }
+
                 (linear, angular) = Algo("PathFollow");
 
+                if (GameObject.FindGameObjectsWithTag("Wolf").Length>=1 && (ai.agent.position - GameObject.FindGameObjectsWithTag("Wolf")[0].GetComponent<NPCController>().position).magnitude < 1.5f)
+                {
+                    
+                    if (timeCounter > 50)//1second
+                    {
+                        ai.Stop();
+                        timeCounter -= 1;
+                    }
+                    else if (timeCounter <= 0)
+                    {
+                        (linear, angular) = Algo("PathFollow");
+                        timeCounter = 150;
+                    }
+                    else
+                    {
+                        (linear, angular) = Algo("PathFollow");
+                        timeCounter -= 1;
+                    }
+                }
                 break;
             case 7:
                 if (label)
@@ -161,6 +217,16 @@ public class NPCController : MonoBehaviour {
                 linear = ai.Arrive(ai.target.position - ai.agent.position);
                 angular = ai.Face();
 
+                break;
+            case 8:
+                if (label)
+                {
+                    label.text = "SeekWithArrive";
+                }
+                (linear, angular) = Algo("SeekWithArrive");
+                
+               
+               
                 break;
         }
         update(linear, angular, Time.deltaTime);
@@ -290,8 +356,13 @@ public class NPCController : MonoBehaviour {
         {
             //seek new target based on hitinfo
             //Debug.Log("facewhisker:"+ hitInfo.collider.name);
+
+            if (ai.tag == "Hunter" && phase == 8 && hitInfo.collider.name == "House")
+            {
+                phase = 7;
+            }
             
-            if (ai.tag == "Red" && hitInfo.collider.name == "House")
+            if ((ai.tag == "Red" && hitInfo.collider.name == "House") || (ai.target != null && ai.tag == "Wolf" && ai.target.tag == "House" && hitInfo.collider.name == "House"))
             {
                 //Debug.Log("house1");
                 //(linear, angular) = ai.PathFollow();
@@ -315,11 +386,15 @@ public class NPCController : MonoBehaviour {
         }
         else if ((ai.PerformWhiskerAlongVelocity(out hitInfo) == true ) && hitInfo.collider.tag != "Player" && hitInfo.collider.tag != ai.tag)
         {
+            if (ai.tag == "Hunter" && phase == 8 && hitInfo.collider.name == "House")
+            {
+                phase = 7;
+            }
             //seek new target based on hitinfo
 
             //Debug.Log("velocitywhisker:" + hitInfo.collider.name);
-            
-            if (ai.tag == "Red" && hitInfo.collider.name == "House")
+
+            if ((ai.tag == "Red" && hitInfo.collider.name == "House") || (ai.target != null && ai.tag == "Wolf" &&ai.target.tag == "House" && hitInfo.collider.name == "House"))
             {
                 //Debug.Log("house2");
                 //(linear, angular) = ai.PathFollow();
@@ -376,7 +451,12 @@ public class NPCController : MonoBehaviour {
                     angular = ai.Wander();
                 }else if (algo == "PathFollow")
                 {
-                    (linear, angular) = ai.PathFollow(); 
+                    (linear, angular) = ai.PathFollow();
+                }
+                else if (algo == "SeekWithArrive")
+                {
+                    linear = ai.Arrive();
+                    angular = ai.Face();
                 }
                 
             }
@@ -401,6 +481,7 @@ public class NPCController : MonoBehaviour {
         //Debug.Log("Disappear!");
         label.text = "";
         if (GameObject.FindGameObjectWithTag("Hunter")){
+            GameObject.FindGameObjectWithTag("Hunter").GetComponent<NPCController>().label.text = "";
             GameObject.FindGameObjectWithTag("Hunter").SetActive(false);
         }
         

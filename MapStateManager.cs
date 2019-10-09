@@ -28,6 +28,7 @@ enum Behaviors
     CheckDistance = 4,
     Arrive = 5,
     PathFollow = 6,
+    seekWithArrive = 8,
     // Saturday =5,
     // Sunday = 6
 }
@@ -235,6 +236,9 @@ public class MapStateManager : MonoBehaviour {
             case 5:
                 EnterMapStateFive();
                 break;
+            case 7:
+                EnterMapStateSeven();
+                break;
         }
     }
 
@@ -358,9 +362,25 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs.Add(wolf);
         //add  spawnedNPCs[0]:red as target
         wolf.GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
+        wolf.GetComponent<SteeringBehavior>().house = this.house.GetComponent<NPCController>();
         //DestroyTrees();
     }
 
+    private void EnterMapStateSeven()
+    {
+
+        narrator.text = "Mapstate Seven\n";
+
+        currentPhase = 7; // or whatever. Won't necessarily advance the phase every time
+        previousPhase = 7;
+
+        GameObject hunter = SpawnItem(spawner1, HunterPrefab, this.house, SpawnText2, (int)Behaviors.seekWithArrive);
+        spawnedNPCs.Add(hunter);//[2]
+
+
+ 
+       
+    }
 
     // ... Etc. Etc.
 

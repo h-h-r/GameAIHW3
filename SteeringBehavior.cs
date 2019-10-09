@@ -14,6 +14,7 @@ public class SteeringBehavior : MonoBehaviour {
     public NPCController target;
 
     public GameObject player;
+    public NPCController house;
 
     // Below are a bunch of variable declarations that will be used for the next few
     // assignments. Only a few of them are needed for the first assignment.
@@ -49,6 +50,9 @@ public class SteeringBehavior : MonoBehaviour {
     public bool avoidTree;
     public  Vector3 treePosition;
     public float treeEscapeRadius;
+
+    public int countHitWall = 0;
+
 
     // Holds the path to follow
     public GameObject[] Path;
@@ -696,19 +700,44 @@ public class SteeringBehavior : MonoBehaviour {
     //return linear_acc and angular_acc
     public (Vector3,float) SeekAndFaceToNewTarget(RaycastHit info)
     {
-            //hit wall
-            //calculate position of avoidence target
-            Vector3 newTarget = info.point + info.normal * wanderOffset* 3; //calculate normal 
-            //agent.Draw1Whiskers(newTarget,agent.position);
-            Vector3 linear_acc = newTarget - agent.position; //seek direction vector
+        //hit wall
+        
+        //calculate position of avoidence target
+        Vector3 newTarget = info.point + info.normal * wanderOffset* 3; //calculate normal 
+        //agent.Draw1Whiskers(newTarget,agent.position);
+        Vector3 linear_acc = newTarget - agent.position; //seek direction vector
+             
+        //clip to max linear acceleration
+        if (linear_acc.magnitude > this.maxAcceleration)
+        {
+            linear_acc = linear_acc.normalized * maxAcceleration;
+        }
+        //Haoran
+        //Vector3 intentionAcc = (info.point - agent.position);
+        ////if (intentionAcc.magnitude < this.maxAcceleration)
+        ////{
+        //    intentionAcc = intentionAcc.normalized * maxAcceleration;
+        ////}
+        //linear_acc += intentionAcc;
+        //if (linear_acc.magnitude > this.maxAcceleration)
+        //{
+        //    linear_acc = linear_acc.normalized * maxAcceleration;
+        //}
+        //
 
-            //clip to max linear acceleration
-            if (linear_acc.magnitude > this.maxAcceleration)
-            {
-                linear_acc = linear_acc.normalized * maxAcceleration;
-            }
-            float angular_acc = FaceTo(newTarget - agent.position);
-            return (linear_acc, angular_acc);
+        countHitWall += 1;
+        if (countHitWall >= 100)
+        {
+            linear_acc = (new Vector3(Mathf.Sin(agent.orientation), 0, Mathf.Cos(agent.orientation)).normalized * maxAcceleration);
+        }
+        else if (countHitWall >= 200)
+        {
+            countHitWall = 0;
+        }
+
+
+        float angular_acc = FaceTo(newTarget - agent.position);
+        return (linear_acc, angular_acc);
     }
 
     //Haoran 
@@ -814,9 +843,14 @@ public class SteeringBehavior : MonoBehaviour {
     public void Stop(){
         agent.velocity = new Vector3(0f,0f,0f);
     }
-    
-    
-    
+    //Haoran
+    public void StopTarget()
+    {
+        target.velocity = new Vector3(0f, 0f, 0f);
+    }
+
+
+
     // ETC.
 
 }
