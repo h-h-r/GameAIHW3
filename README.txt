@@ -10,3 +10,4 @@ Eric Xu
 3: The hunter and the wolf wander until the hunter spots the wolf and believes it is his target. 
     The Wolf evades and the hunter pursues.
 4: Red appears and walks to Granny's house using path following algorithm with obstacle avoidence.
+5: Wolf appears and pursues Red.

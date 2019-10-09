@@ -231,7 +231,10 @@ public class MapStateManager : MonoBehaviour {
 
             case 4:
                 EnterMapStateFour();
-            break;
+                break;
+            case 5:
+                EnterMapStateFive();
+                break;
         }
     }
 
@@ -288,7 +291,7 @@ public class MapStateManager : MonoBehaviour {
     {
         narrator.text = "MapState Two\n Wolf appears and wander";
 
-        GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText1, 0);
+        GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText3, 0);
         spawnedNPCs.Add(wolf);
         // wolf
         spawnedNPCs[1].GetComponent<NPCController>().phase = (int)Behaviors.wander;
@@ -325,7 +328,7 @@ public class MapStateManager : MonoBehaviour {
     private void EnterMapStateFour()
     {
 
-        narrator.text = "Mapstate Foour\n";
+        narrator.text = "Mapstate Four\n";
 
         currentPhase = 4; // or whatever. Won't necessarily advance the phase every time
         previousPhase = 4;
@@ -334,13 +337,27 @@ public class MapStateManager : MonoBehaviour {
         //spawnedNPCs[1].SetActive(true);
         spawnedNPCs.ForEach(Destroy);
         spawnedNPCs.Clear();
-        //Debug.Log("<"+spawnedNPCs.Count + ">\n" );
         CreatePath();
-        GameObject red = SpawnItem(spawner3, RedPrefab, null, SpawnText3, (int)Behaviors.PathFollow);
-        //GameObject red = SpawnItem(spawner3, RedPrefab, null, SpawnText3, 7);
+        GameObject red = SpawnItem(spawner3, RedPrefab, null, SpawnText1, (int)Behaviors.PathFollow);
 
         spawnedNPCs.Add(red);
         red.GetComponent<SteeringBehavior>().target = this.house.GetComponent<NPCController>();
+        //DestroyTrees();
+    }
+
+     private void EnterMapStateFive()
+    {
+
+        narrator.text = "Mapstate Five\n";
+
+        currentPhase = 5; // or whatever. Won't necessarily advance the phase every time
+        previousPhase = 5;
+
+       GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText3, (int)Behaviors.Pursue);
+
+        spawnedNPCs.Add(wolf);
+        //add  spawnedNPCs[0]:red as target
+        wolf.GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
         //DestroyTrees();
     }
 

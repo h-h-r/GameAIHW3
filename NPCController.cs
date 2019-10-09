@@ -92,7 +92,12 @@ public class NPCController : MonoBehaviour {
                     label.text = "Pursue";
                 }
                 (linear, angular) = Algo("Pursue");
-                if (ai.DistanceToTarget()<5f){
+                //if (ai.target.tag == "Red(Clone)" && ai.DistanceToTarget() < 2f)
+                //{
+                //    //phase = 5;
+                //}
+                if (ai.target.tag != "Red" && ai.DistanceToTarget()<5f){
+                    Debug.Log("?????????????????????????/");
                     phase = 5;
                 }
 
@@ -284,14 +289,14 @@ public class NPCController : MonoBehaviour {
         if (( ai.PerformWhisker(out hitInfo) == true) && hitInfo.collider.tag != "Player" && hitInfo.collider.tag != ai.tag)
         {
             //seek new target based on hitinfo
-            Debug.Log("facewhisker:"+ hitInfo.collider.name);
+            //Debug.Log("facewhisker:"+ hitInfo.collider.name);
             
-            if (hitInfo.collider.name == "House")
+            if (ai.tag == "Red" && hitInfo.collider.name == "House")
             {
-                Debug.Log("house1");
-                (linear, angular) = ai.PathFollow();
+                //Debug.Log("house1");
+                //(linear, angular) = ai.PathFollow();
                 phase = 7;
-                Debug.Log(ai.target.position);
+                //Debug.Log(ai.target.position);
 
             }
             else if (hitInfo.collider.name == "Tree(Clone)")
@@ -312,14 +317,14 @@ public class NPCController : MonoBehaviour {
         {
             //seek new target based on hitinfo
 
-            Debug.Log("velocitywhisker:" + hitInfo.collider.name);
+            //Debug.Log("velocitywhisker:" + hitInfo.collider.name);
             
-            if (hitInfo.collider.name == "House")
+            if (ai.tag == "Red" && hitInfo.collider.name == "House")
             {
-                Debug.Log("house2");
-                (linear, angular) = ai.PathFollow();
+                //Debug.Log("house2");
+                //(linear, angular) = ai.PathFollow();
                 phase = 7;
-                Debug.Log(ai.target.position);
+                //Debug.Log(ai.target.position);
             }else if (hitInfo.collider.name == "Tree(Clone)")
             {
                 ai.avoidTree = true;
