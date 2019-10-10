@@ -63,6 +63,17 @@ public class SteeringBehavior : MonoBehaviour {
         wanderOrientation = agent.orientation;
     }
 
+    //arrive at house?
+    public bool ArriveHouse(){
+        if ((agent.position - house.position).magnitude < 1.5f){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    public float distanceToHouse(){
+        return (agent.position - house.position).magnitude;
+    }
     //Haoran
     //pathfollow
     public (Vector3,float) PathFollow()

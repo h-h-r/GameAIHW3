@@ -132,8 +132,10 @@ public class NPCController : MonoBehaviour {
                         
                     }
                 }
+
+                //must be wolf, already meet red, target now is house
                 if (ai.target.tag != "Red" && ai.DistanceToTarget()<5f){
-                    //Debug.Log("?????????????????????????/");
+                    //Debug.Log(ai.tag+"?????????????????????????/");
                     phase = 5;
                 }
 
@@ -173,10 +175,14 @@ public class NPCController : MonoBehaviour {
                 }
                 linear = ai.Arrive();
                 angular = ai.Face();
-                if (ai.DistanceToTarget()<2f){
-                    //Invoke("DisappearHunter",3);
-                    //Debug.Log("????????????????");
-                    return;
+                // if (ai.DistanceToTarget()<2f){
+                //     //Invoke("DisappearHunter",3);
+                //     //Debug.Log("????????????????");
+                //     return;
+                // }
+                Debug.Log(ai.tag+" "+ai.distanceToHouse());
+                if (ai.ArriveHouse()){
+                    phase = 9;
                 }
 
                 break;
@@ -216,6 +222,11 @@ public class NPCController : MonoBehaviour {
                 //(linear, angular) = ai.PathFollow();
                 linear = ai.Arrive(ai.target.position - ai.agent.position);
                 angular = ai.Face();
+                Debug.Log(ai.tag +" "+ai.distanceToHouse());
+                if (ai.ArriveHouse()){
+                    phase = 9;
+                }
+                // if (ai.position - GameObject.FindGameObjectWithTag("House".get))
 
                 break;
             case 8:
@@ -224,10 +235,21 @@ public class NPCController : MonoBehaviour {
                     label.text = "SeekWithArrive";
                 }
                 (linear, angular) = Algo("SeekWithArrive");
-                
-               
-               
                 break;
+            case 9: 
+                if (label)
+                    {
+                        label.text = "";
+                    }
+                    if (ai.tag == "Wolf"){
+                        DisappearWolf();
+                    }else if (ai.tag == "Hunter"){
+                        DisappearHunter();
+                    }else{
+                        DisappearRed();
+                    }
+                break;
+                
         }
         update(linear, angular, Time.deltaTime);
         if (label) {
@@ -470,6 +492,7 @@ public class NPCController : MonoBehaviour {
         //Debug.Log("Disappear!");
         label.text = "";
         if (GameObject.FindGameObjectWithTag("Wolf")){
+            GameObject.FindGameObjectWithTag("Wolf").GetComponent<NPCController>().label.text = "";
             GameObject.FindGameObjectWithTag("Wolf").SetActive(false);
         }
         // Destroy(GameObject.FindGameObjectWithTag("Hunter"));
@@ -489,5 +512,17 @@ public class NPCController : MonoBehaviour {
         // Destroy(GameObject.FindGameObjectWithTag("Hunter"));
     }
     
+
+    //Haoran 
+    //destroy red
+    public void DisappearRed(){
+        label.text = "";
+        if (GameObject.FindGameObjectWithTag("Red")){
+            GameObject.FindGameObjectWithTag("Red").GetComponent<NPCController>().label.text = "";
+            GameObject.FindGameObjectWithTag("Red").SetActive(false);
+        }
+
+    }
+
 
 }

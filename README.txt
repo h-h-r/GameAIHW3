@@ -14,3 +14,8 @@ Eric Xu
 6: This stage can only be triggered automatically when wolf and red collide in stage 5.
 7: Hunter appears again and runs to Granny’s house.
 8: 
+
+a.hunter and wolf collide on the way(not at house), wolf gets killed. Wolf must disppear.
+b.wolf arrive at house first: Granny gets killed.
+c.red arrive at house first: shut the door. Hunter and wolf will collide at the house, wolf must disapper.
+d.hunter arrive at house first: wait for the wolf. When they collide, wolf must disappear. 

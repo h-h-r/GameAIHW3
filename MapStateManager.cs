@@ -273,6 +273,8 @@ public class MapStateManager : MonoBehaviour {
         //wolf
         //spawnedNPCs[1].GetComponent<NPCController>().phase = (int)Behaviors.wander;
 
+        hunter.GetComponent<SteeringBehavior>().house = this.house;
+
         currentPhase = 1;
         previousPhase = 1;
 
@@ -299,6 +301,8 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs.Add(wolf);
         // wolf
         spawnedNPCs[1].GetComponent<NPCController>().phase = (int)Behaviors.wander;
+
+        wolf.GetComponent<SteeringBehavior>().house = this.house;
 
         currentPhase = 2;
         previousPhase = 2;
@@ -346,6 +350,8 @@ public class MapStateManager : MonoBehaviour {
 
         spawnedNPCs.Add(red);
         red.GetComponent<SteeringBehavior>().target = this.house.GetComponent<NPCController>();
+        red.GetComponent<SteeringBehavior>().house = this.house;
+
         //DestroyTrees();
     }
 
@@ -362,7 +368,7 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs.Add(wolf);
         //add  spawnedNPCs[0]:red as target
         wolf.GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
-        wolf.GetComponent<SteeringBehavior>().house = this.house.GetComponent<NPCController>();
+        wolf.GetComponent<SteeringBehavior>().house = this.house;
         //DestroyTrees();
     }
 
@@ -376,6 +382,7 @@ public class MapStateManager : MonoBehaviour {
 
         GameObject hunter = SpawnItem(spawner1, HunterPrefab, this.house, SpawnText2, (int)Behaviors.seekWithArrive);
         spawnedNPCs.Add(hunter);//[2]
+        hunter.GetComponent<SteeringBehavior>().house = this.house;
 
 
  
