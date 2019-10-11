@@ -63,6 +63,7 @@ public class SteeringBehavior : MonoBehaviour {
         wanderOrientation = agent.orientation;
     }
 
+    //Haoran
     //arrive at house?
     public bool ArriveHouse(){
         if ((agent.position - house.position).magnitude < 1.5f){
@@ -71,6 +72,8 @@ public class SteeringBehavior : MonoBehaviour {
             return false;
         }
     }
+    //Haoran
+    //calculate distance to house
     public float distanceToHouse(){
         return (agent.position - house.position).magnitude;
     }
@@ -78,7 +81,7 @@ public class SteeringBehavior : MonoBehaviour {
     //pathfollow
     public (Vector3,float) PathFollow()
     {
-        Vector3 targetOnPath = computeTrgetOnThePath();
+        Vector3 targetOnPath = computeTargetOnThePath();
         //Debug.Log(targetOnPath);
         agent.DrawCircle(targetOnPath, 0.3f);
         Vector3 linearAcc = Seek(targetOnPath);
@@ -87,15 +90,9 @@ public class SteeringBehavior : MonoBehaviour {
     }
 
     //Haoran
-    //pathfollow helper function
-    private Vector3 computeTrgetOnThePath()
+    //pathfollow helper function: find the target position on path
+    private Vector3 computeTargetOnThePath()
     {
-        //for (int i = 0; i < Path.Length; i++)
-        //{
-        //    Debug.Log(i+"<>"+ Path[i].transform.position);
-        //}
-
-
         //compute line vectors,  n nodes => n-1 vectors
         List<Vector3> lineVectors = new List<Vector3>();
         for (int i = 1; i < Path.Length; i++)
@@ -175,7 +172,9 @@ public class SteeringBehavior : MonoBehaviour {
 
     }
 
-    public Vector3 FindNearestPointOnLine(Vector3 origin, Vector3 end, Vector3 point)
+    //Haoran
+    // find nearest position on line segment
+    private Vector3 FindNearestPointOnLine(Vector3 origin, Vector3 end, Vector3 point)
     {
         //Get heading
         Vector3 heading = (end - origin);

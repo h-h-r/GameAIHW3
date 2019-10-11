@@ -251,46 +251,25 @@ public class MapStateManager : MonoBehaviour {
         previousPhase = 0;
 
         spawnedNPCs.ForEach(Destroy);
-        // GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText1, 0);
-        // GameObject hunter = SpawnItem(spawner1, HunterPrefab, null, SpawnText2, 0);
-
-        // spawnedNPCs.Add(hunter);
-        // spawnedNPCs.Add(wolf);
-
+      
 
     }
 
     private void EnterMapStateOne() {
         narrator.text = "MapState one\n Hunter appears and wander";
 
-        // GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText1, 0);
         GameObject hunter = SpawnItem(spawner1, HunterPrefab, null, SpawnText2, 0);
         spawnedNPCs.Add(hunter);
-        // spawnedNPCs.Add(wolf);
 
          //hunter
         spawnedNPCs[0].GetComponent<NPCController>().phase = (int)Behaviors.wander;
-        //wolf
-        //spawnedNPCs[1].GetComponent<NPCController>().phase = (int)Behaviors.wander;
 
         hunter.GetComponent<SteeringBehavior>().house = this.house;
 
         currentPhase = 1;
         previousPhase = 1;
 
-        // spawnedNPCs.ForEach(Destroy);
-
-        // //GameObject wolf = SpawnItem(spawner2, WolfPrefab, null, SpawnText2, 1);
-        // //GameObject hunter = SpawnItem(spawner1, HunterPrefab, wolf.GetComponent<NPCController>(), SpawnText1, 1);
-        // //wolf.GetComponent<SteeringBehavior>().target = hunter.GetComponent<NPCController>();
-
-        // GameObject hunter = SpawnItem(spawner1, HunterPrefab, null, SpawnText1, 1);
-        // GameObject wolf = SpawnItem(spawner2, WolfPrefab, hunter.GetComponent<NPCController>(), SpawnText2, 1);
-        
-        // hunter.GetComponent<SteeringBehavior>().target = wolf.GetComponent<NPCController>();
-
-        // spawnedNPCs.Add(hunter);
-        // spawnedNPCs.Add(wolf);
+    
     }
 
     private void EnterMapStateTwo()
@@ -313,9 +292,6 @@ public class MapStateManager : MonoBehaviour {
     {
         narrator.text = "MapState Three\n";
         
-        // if (spawnedNPCs.Count > 1 && Vector3.Distance(spawnedNPCs[1].transform.position, spawnedNPCs[0].transform.position) < 12)
-        // {
-            // Debug.Log("close!!!!!!!!!!!!!!!!!!!");
         narrator.text += "The hunter and the wolf wander until the hunter spots the wolf and believes it is his target. The Wolf runs.";
         spawnedNPCs[0].GetComponent<SteeringBehavior>().target = spawnedNPCs[1].GetComponent<NPCController>();
         spawnedNPCs[1].GetComponent<SteeringBehavior>().target = spawnedNPCs[0].GetComponent<NPCController>();
@@ -324,8 +300,6 @@ public class MapStateManager : MonoBehaviour {
         spawnedNPCs[0].GetComponent<NPCController>().phase =(int)Behaviors.CheckDistance;
         //wolf
         spawnedNPCs[1].GetComponent<NPCController>().phase = (int)Behaviors.CheckDistance;
-        // currentPhase++;
-        // }
         
         currentPhase = 3;
         previousPhase = 3;

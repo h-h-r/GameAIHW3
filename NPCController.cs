@@ -29,6 +29,8 @@ public class NPCController : MonoBehaviour {
     LineRenderer line;              // Used to draw circles and other things
     LineRenderer ray;
 
+   
+
     private int timeCounter = (int)(3 / 0.02); 
 
     private void Start() {
@@ -126,10 +128,6 @@ public class NPCController : MonoBehaviour {
                             //timeCounter = 150;
                         }
                         
-                        //Debug.Log(Time.fixedDeltaTime + "/////");
-                        //ai.StopTarget();
-                        //ai.target = GameObject.FindGameObjectsWithTag("House").;
-                        
                     }
                 }
 
@@ -154,18 +152,6 @@ public class NPCController : MonoBehaviour {
                         phase = 3;
                     }
                 }
-                // Vector3 collisionPoint;
-                // if (ai.CollisionPrediction(out collisionPoint) == true)
-                // {
-                //     DrawCircle(collisionPoint, 0.1f);
-                //     linear = ai.Evade(collisionPoint);
-                //     label.text = "Evade from the pridicted circle!";
-                //     angular = ai.FaceAway();
-                // }
-                // else
-                // {
-                //     (linear, angular) = Algo("ChasePlayer");
-                // }
 
                 
                 break;
@@ -175,11 +161,7 @@ public class NPCController : MonoBehaviour {
                 }
                 linear = ai.Arrive();
                 angular = ai.Face();
-                // if (ai.DistanceToTarget()<2f){
-                //     //Invoke("DisappearHunter",3);
-                //     //Debug.Log("????????????????");
-                //     return;
-                // }
+               
                 Debug.Log(ai.tag+" "+ai.distanceToHouse());
                 if (ai.ArriveHouse()){
                     phase = 9;
@@ -219,14 +201,12 @@ public class NPCController : MonoBehaviour {
                 {
                     label.text = "gotohouse";
                 }
-                //(linear, angular) = ai.PathFollow();
                 linear = ai.Arrive(ai.target.position - ai.agent.position);
                 angular = ai.Face();
                 Debug.Log(ai.tag +" "+ai.distanceToHouse());
                 if (ai.ArriveHouse()){
                     phase = 9;
                 }
-                // if (ai.position - GameObject.FindGameObjectWithTag("House".get))
 
                 break;
             case 8:
@@ -243,11 +223,18 @@ public class NPCController : MonoBehaviour {
                     }
                     if (ai.tag == "Wolf"){
                         DisappearWolf();
+                        GameObject.FindGameObjectWithTag("Narrator").GetComponent<Text>().text +="Wolf arrives!\n" ;
                     }else if (ai.tag == "Hunter"){
                         DisappearHunter();
+                        GameObject.FindGameObjectWithTag("Narrator").GetComponent<Text>().text +="Hunter arrives!\n" ;
                     }else{
                         DisappearRed();
+                       
+                        GameObject.FindGameObjectWithTag("Narrator").GetComponent<Text>().text +="Red arrives!\n" ;
+                        
+                        
                     }
+                    addEndingStory();
                 break;
                 
         }
@@ -371,8 +358,6 @@ public class NPCController : MonoBehaviour {
         Vector3 linear = ai.maxAcceleration * new Vector3(Mathf.Sin(ai.GetComponent<NPCController>().orientation), 0, Mathf.Cos(ai.GetComponent<NPCController>().orientation));
 
         RaycastHit hitInfo;
-        //if (ai.PerformWhisker(out hitInfo) == true && hitInfo.collider.tag != "Player")
-        //if ((ai.PerformWhiskerAlongVelocity(out hitInfo) == true) && hitInfo.collider.tag != "Player" && hitInfo.collider.tag != ai.tag)
 
         if (( ai.PerformWhisker(out hitInfo) == true) && hitInfo.collider.tag != "Player" && hitInfo.collider.tag != ai.tag)
         {
@@ -522,6 +507,41 @@ public class NPCController : MonoBehaviour {
             GameObject.FindGameObjectWithTag("Red").SetActive(false);
         }
 
+    }
+
+
+    public void addEndingStory(){
+
+        bool hunterArrived = !GameObject.FindGameObjectWithTag("Hunter");
+        bool wolfArrived = !GameObject.FindGameObjectWithTag("Wolf");
+        bool redArrived = !GameObject.FindGameObjectWithTag("Red");
+        
+
+        if (ai.tag=="Wolf"){
+            if (hunterArrived == true){
+                GameObject.FindGameObjectWithTag("Narrator").GetComponent<Text>().text +="Wolf: gets killed by hunter\n";
+            }else if (redArrived == true){
+                GameObject.FindGameObjectWithTag("Narrator").GetComponent<Text>().text +="Wolf: finds no one in the house\n";
+            }else{
+                GameObject.FindGameObjectWithTag("Narrator").GetComponent<Text>().text +="Wolf: eats granny\n";
+            }
+        }
+
+        if (ai.tag=="Hunter"){
+            if (wolfArrived == true){
+                GameObject.FindGameObjectWithTag("Narrator").GetComponent<Text>().text +="Hunter: kills wolf\n";
+            }else{
+                GameObject.FindGameObjectWithTag("Narrator").GetComponent<Text>().text +="Hunter: guards the house\n";
+            }
+        }
+
+        if (ai.tag=="Red"){
+            if (wolfArrived == true && hunterArrived== false){
+                GameObject.FindGameObjectWithTag("Narrator").GetComponent<Text>().text +="Red: finds granny's blood on the floor\n";
+            }else{
+                GameObject.FindGameObjectWithTag("Narrator").GetComponent<Text>().text +="Red: escape with granny from backyard\n";
+            }
+        }
     }
 
 
